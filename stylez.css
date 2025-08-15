@@ -1,68 +1,161 @@
+/* ---------------------------
+   Design tokens (custom props)
+   --------------------------- */
 :root {
-    --FontColor: white;
-    --TextSize: 15px;
-    --GraDir: bottom right;
-    --GradStop1: black;
-    --GradStop2: black;
-    --GradStop3: grey;
-    --GradStop4: black;
-    --GradStop5: black;
-    --LinkColor: grey;
-    --LinkColorHover: lightgrey;
-  }
-@font-face {
-    font-family: 'Yatra One';
-    src: url('https://fonts.googleapis.com/css2?family=Yatra+One&display=swap');
+  /* Colors */
+  --FontColor: white;
+  --LinkColor: grey;
+  --LinkColorHover: lightgrey;
+
+  /* Background gradient controls */
+  --GraDir: bottom right;          /* Accepts angles or directions (e.g., 135deg or bottom right) */
+  --GradStop1: black;
+  --GradStop2: black;
+  --GradStop3: grey;
+  --GradStop4: black;
+  --GradStop5: black;
+
+  /* Type scale */
+  --TextSize: 15px;                /* Base body size (used as a min bound) */
+  --font-body: "Yatra One", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Eagle Lake", Georgia, "Times New Roman", serif;
+
+  /* Rhythm and layout */
+  --line-height: 1.6;
+  --content-max: 72ch;
+  --radius: 10px;
+  --surface: rgba(255,255,255,0.04);
+
+  /* Motion */
+  --anim-fast: 150ms;
 }
-@font-face {
-    font-family: 'Eagle Lake';
-    src: url('https://fonts.googleapis.com/css2?family=Eagle+Lake&display=swap');
-}
+
+/* Prefer dark-friendly UA styles */
+html { color-scheme: dark; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-    background-image: repeating-linear-gradient(to var(--GraDir), var(--GradStop1), var(--GradStop2), var(--GradStop3), var(--GradStop4));
-    color: var(--FontColor);
-    font-family: 'Yatra One';
-    font-size: var(--TextSize);
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--FontColor);
+  font-family: var(--font-body);
+  /* Fluid type: clamps around your --TextSize baseline */
+  font-size: clamp(calc(var(--TextSize) - 2px), 0.9rem + 0.25vw, calc(var(--TextSize) + 3px));
+  line-height: var(--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Smooth, non-repeating gradient for better readability and GPU friendliness */
+  background:
+    linear-gradient(
+      to var(--GraDir),
+      var(--GradStop1) 0%,
+      var(--GradStop2) 25%,
+      var(--GradStop3) 50%,
+      var(--GradStop4) 75%,
+      var(--GradStop5) 100%
+    );
+  background-attachment: fixed;
 }
+
+/* Typography */
 h1, h2, h3, h4, h5, h6, p {
-    color: var(--FontColor);
-    font-family: 'Eagle Lake';
+  color: var(--FontColor);
+  margin-block: 0.5em;
 }
-p {
-    
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  letter-spacing: 0.2px;
 }
-a:link {
-    color: var(--LinkColor);
-    text-decoration: none;
-  }
-  a:visited {
-    color: var(--LinkColor);
-    text-decoration: none;
-  }
-  a:hover {
-    color: var(--LinkColorHover);
-    text-decoration: none;
-    font-style: italic;
-  }
-  a:active {
-    color: var(--LinkColor);
-    text-decoration: none;
-    font-style: italic;
-  }
+
+h1 { font-size: clamp(2rem, 3vw, 3rem); }
+h2 { font-size: clamp(1.6rem, 2.5vw, 2.4rem); }
+h3 { font-size: clamp(1.3rem, 2vw, 1.8rem); }
+h4 { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
+h5 { font-size: clamp(1.05rem, 1.3vw, 1.25rem); }
+h6 { font-size: 1rem; }
+
+/* Content container helper (optional) */
+.container {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+/* Links: accessible, minimal layout shift, clear hover/focus states */
+a {
+  color: var(--LinkColor);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1.5px;
+  transition: color var(--anim-fast) ease, text-underline-offset var(--anim-fast) ease;
+}
+a:hover {
+  color: var(--LinkColorHover);
+  text-underline-offset: 3px;
+}
+a:active {
+  opacity: 0.9;
+}
+a:visited {
+  color: var(--LinkColor);
+}
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Disclosure patterns */
 details {
-    
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
 }
-searchi{
-    display:none;
+details + details { margin-top: 0.5rem; }
+summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
 }
-.fade-out {
-  animation: fadeOut 150ms forwards;
-}
+summary::-webkit-details-marker { display: none; }
+
+/* Utilities */
+.hidden { display: none !important; }
+
+/* If your intent was an element with id or class "searchi", support both */
+#searchi, .searchi { display: none !important; }
+
+/* Motion: respectful of reduced-motion preferences */
+.fade-out { animation: fadeOut var(--anim-fast) forwards; }
 @keyframes fadeOut {
-  from {
-      opacity: 1;
-  }
-  to {
-      opacity: 0;
-  }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
+
+/* Media elements and iframes */
+img, svg, video, canvas, iframe { max-width: 100%; height: auto; }
+
+/* Forms (light touch; inherits link/focus styles) */
+input, select, textarea, button {
+  font: inherit;
+  color: inherit;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+}
+input::placeholder, textarea::placeholder { opacity: 0.7; }
+button {
+  cursor: pointer;
+  background: rgba(255,255,255,0.08);
+}
+button:hover { background: rgba(255,255,255,0.12); }
+button:active { transform: translateY(0.5px); }
